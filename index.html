@@ -1,1 +1,82 @@
-<meta http-equiv="refresh" content="0; url=http://rutapon.ddns.net:8088/" />
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jschannel/1.0.0-git-commit1-8c4f7eb/jschannel.min.js"></script>
+    <!-- <script src="./setupProxyIf.js"></script> -->
+    <script>
+        //NwApiConn.k = 'keyhello'
+
+        setupProxy = function () {
+            var proxyUrl = 'https://rutapon426.000webhostapp.com/NwStkService/api/proxy/';
+            $('<iframe id="ifproxy" src="' + proxyUrl + '" style="display: none;"></iframe>')
+                .appendTo('body');
+
+            var chan = Channel.build({
+                window: document.getElementById("ifproxy").contentWindow,
+                origin: "*",
+                scope: "testScope"
+            });
+
+            return function (msgObj, cb) {
+                chan.call({
+                    method: "sendMsgObj",
+                    params: msgObj,
+                    success: cb
+                });
+            };
+        }
+
+        $(function () {
+            window.sendMsgObj = setupProxy();
+            // var sendMsgObjLocal = function (msgObj, cb) {
+            //     $.ajax({
+            //         url: "/NwStkService/api/",
+            //         data: JSON.stringify(msgObj),
+            //         type: "POST",
+            //         contentType: "application/json"
+            //     }).done(function (data) {
+            //         if (cb) cb(data);
+            //     });
+            // };
+
+            // window.callMsg = function (msgObj, cb) {
+            //     chan.call({
+            //         method: "callMsg",
+            //         params: { msgObj: msgObj, callFunc: sendMsgObjLocal },
+            //         success: cb
+            //     })
+            // };
+
+            $('#test').click(function (params) {
+                // NwApiConn.post('showPost.php', { 'data': 'hello' }, function (result) {
+                //     console.log(result);
+                // })
+
+                // chan.call({
+                //     method: "reverse",
+                //     params: "hello world!",
+                //     success: function (v) {
+                //         console.log(v);
+                //     }
+                // })
+                sendMsgObj({ msg: 'getServerDateTime', data: { 'data': 'hello' } }, function (result) {
+                    console.log(result);
+                });
+
+            })
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <!-- <iframe id="ifproxy" src="https://rutapon426.000webhostapp.com/NwStkService/api/proxy/" style="display: none;"></iframe> -->
+    <button id="test">test</button>
+</body>
+
+</html>
